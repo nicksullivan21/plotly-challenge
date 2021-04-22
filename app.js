@@ -70,7 +70,7 @@ function buildmetadatadisplay(sample){
 
 // Update all of the plots any time that a new sample is selected
 function dropdownupdate(sample){
-    d3.json("data/samples.json").then((data) => {
+    d3.json("plotly-challenge/data/samples.json").then((data) => {
         var selDataset = d3.select("#selDataset")
         var names = data.names
         names.forEach((name) => {
