@@ -1,6 +1,6 @@
 function buildchart(sample){
     // Read in samples data using D3 library
-    d3.json("../data/samples.json").then((data) => {
+    d3.json("samples.json").then((data) => {
         var samples = data.samples;
         var resultArray = samples.filter(sampleObj => sampleObj.id == sample);
         var result = resultArray[0];
@@ -56,7 +56,7 @@ function buildchart(sample){
 
 // Display sample metadata
 function buildmetadatadisplay(sample){
-    d3.json("../data/samples.json").then((data) => {
+    d3.json("samples.json").then((data) => {
         var metadata = data.metadata;
         var resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
         var result = resultArray[0];
@@ -70,7 +70,7 @@ function buildmetadatadisplay(sample){
 
 // Update all of the plots any time that a new sample is selected
 function dropdownupdate(sample){
-    d3.json("plotly-challenge/data/samples.json").then((data) => {
+    d3.json("samples.json").then((data) => {
         var selDataset = d3.select("#selDataset")
         var names = data.names
         names.forEach((name) => {
