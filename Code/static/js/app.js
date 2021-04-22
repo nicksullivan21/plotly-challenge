@@ -4,52 +4,53 @@ function buildchart(sample){
         var samples = data.samples;
         var resultArray = samples.filter(sampleObj => sampleObj.id == sample);
         var result = resultArray[0];
+        var sample_values = result.sample_values;
         var otu_ids = result.otu_ids;
         var otu_labels = result.otu_labels;
-        console.log(otu_labels)
-        var sample_values = result.sample_values;
+        // console.log(otu_ids, otu_labels, sample_values)
+        
 
         // Create horizontal bar chart
-        data = [{
+        var y_values = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
+
+        var bar_data = [{
             type: "bar",
             orientation: "h",
-            x: otu_ids.slice(0, 10),
-            y: sample_values.slice(0, 10),
-            text: otu_labels.slice(0, 10)}];
+            x: sample_values.slice(0, 10).reverse(),
+            y: y_values,
+            text: otu_labels.slice(0, 10).reverse()}];
 
-            var layout = {
-                title: 'Test Subject Horizontal Bar Chart Microbe Data',
-                showlegend: false,
-                height: 400,
-                width: 500
-            };
+        var bar_layout = {
+            showlegend: false,
+            height: 500,
+            width: 400
+        };
         
-        Plotly.newPlot("bar", data, layout);
+        Plotly.newPlot("bar", bar_data, bar_layout);
 
         // Create bubble chart
-        var trace1 = {
-            x: otu_ids,
-            y: sample_values,
-            mode: 'markers',
-            text: otu_labels,
-            marker: {
-                color: otu_ids,
-                size: sample_values,
-                opacity: [1, 0.8, 0.6, 0.4],
-                size: [40, 60, 80, 100]
+        var bubble_data = [
+            {
+               x: otu_ids,
+               y: sample_values,
+               mode: 'markers',
+               text: otu_labels,
+               marker: {
+                   color: otu_ids,
+                   colorscale: 'Earth',
+                   size: sample_values,
+                   opacity: [1, 0.8, 0.6, 0.4]
+                }
             }
-        };
+        ];
 
-        var bubbleData = [trace1];
-        console.log(otu_ids)
-        var layout = {
-            title: 'Test Subject Bubble Chart Microbe Data',
-            showlegend: false,
+        var bubble_layout = {
+            xaxis: {title: "OTU ID"},
             height: 600,
-            width: 1400
+            width: 1200
         };
 
-        Plotly.newPlot('bubble', bubbleData, layout);   
+        Plotly.newPlot('bubble', bubble_data, bubble_layout);   
     })
 }
 
@@ -60,14 +61,14 @@ function buildmetadatadisplay(sample){
         var resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
         var result = resultArray[0];
         var sample_metadata = d3.select("#sample-metadata");
-        sample_metadata.hmtl("");
-        Object.defineProperties(result).forEach(([key,value]) => {
-            sample_metadata.append("h6").text(key+" : "+ value)
+        sample_metadata.html("");
+        Object.entries(result).forEach(([key,value]) => {
+            sample_metadata.append("h6").text(`${key}: ${value}`);
         })
     })
 }
 
-//6. Update all of the plots any time that a new sample is selected.
+// Update all of the plots any time that a new sample is selected
 function dropdownupdate(sample){
     d3.json("../data/samples.json").then((data) => {
         var selDataset = d3.select("#selDataset")
